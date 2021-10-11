@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,11 +11,40 @@ public class PlayerController : MonoBehaviour
 
     private int count;
     private int winCount;
+    float timer;
+    public bool won;
+
+    [Header("Ui Stuff")]
+    public TMP_Text countText;
+    public TMP_Text winText;
+    public TMP_Text timerText;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         count = 0;
         winCount = GameObject.FindGameObjectsWithTag("Pick Up").Length;
+
+        countText.wordSpacing = 100;
+        countText.fontSize = 50;
+        countText.color = Color.green;
+        countText.fontStyle = FontStyles.SmallCaps;
+        countText.text = "Count: " + count + " / " + winCount;
+
+        winText.text = "";
+
+        timer = 0;
+        won = false;
+    }
+
+    void Update()
+    {
+        if(won == false)
+        {
+            timer += Time.deltaTime;
+            timerText.text = "Time: " + timer.ToString("F2");
+        }
+        
     }
 
     void FixedUpdate()
@@ -39,10 +69,12 @@ public class PlayerController : MonoBehaviour
     void CheckCount()
     {
         count++;
-        Debug.Log("Pick Up Count: " + count);
+        countText.text = "Count: " + count + " / " + winCount;
+        // Debug.Log("Pick Up Count: " + count);
         if (count == winCount)
         {
-            Debug.Log("You Win!");
+            won = true;
+            winText.text = "You Win!\n" + "<color=red><size=50>" + "Your Time:" + timer.ToString("F3");
         }
     }
 }
