@@ -7,7 +7,9 @@ public class PlayerControl : MonoBehaviour
 {
     public float speed = 10.0f;
     private Rigidbody rb;
-
+    GameObject resetPoint;
+    bool resetting = false;
+    Color originalColor;
 
     private int count;
     private int winCount;
@@ -15,14 +17,17 @@ public class PlayerControl : MonoBehaviour
     public bool won;
 
     [Header("Ui Stuff")]
+    public GameObject gameOverScreen;
     public TMP_Text countText;
     public TMP_Text winText;
     public TMP_Text timerText;
 
     void Start()
     {
+        Time.timeScale = 1;
         rb = GetComponent<Rigidbody>();
         count = 0;
+        gameOverScreen.SetActive(false);
         winCount = GameObject.FindGameObjectsWithTag("Pick Up").Length;
 
         countText.wordSpacing = 100;
@@ -35,6 +40,8 @@ public class PlayerControl : MonoBehaviour
 
         timer = 0;
         won = false;
+        resetPoint = GameObject.Find("Reset Point");
+        originalColor = GetComponent<Renderer>().material.color;
     }
 
     
@@ -48,6 +55,9 @@ public class PlayerControl : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if (resetting)
+            return;
+
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
@@ -72,8 +82,42 @@ public class PlayerControl : MonoBehaviour
         // Debug.Log("Pick Up Count: " + count);
         if (count == winCount)
         {
+            WinGame();
             won = true;
             winText.text = "You Win!\n" + "<color=red><size=50>" + "Your Time:" + timer.ToString("F3");
         }
+    }
+
+    void WinGame()
+    {
+        gameOverScreen.SetActive(true);
+        winText.text = "You Win";
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Respawn"))
+        {
+            StartCoroutine(ResetPlayer());
+        }
+    }
+
+    public IEnumerator ResetPlayer()
+    {
+        resetting = true;
+        GetComponent<Renderer>().material.color = Color.black;
+        rb.velocity = Vector3.zero;
+        Vector3 startPos = transform.position;
+        float resetSpeed = 2f;
+        var i = 0.0f;
+        var rate = 1.0f / resetSpeed;
+        while(i < 1.0f)
+        {
+            i += Time.deltaTime * rate;
+            transform.position = Vector3.Lerp(startPos, resetPoint.transform.position, i);
+            yield return null;
+        }
+        GetComponent<Renderer>().material.color = originalColor;
+        resetting = false;
     }
 }
