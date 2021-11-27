@@ -13,8 +13,10 @@ public class PlayerControl : MonoBehaviour
 
     private int count;
     private int winCount;
-    float timer;
     public bool won;
+
+    GameController gameController;
+    Timer timer;
 
     [Header("Ui Stuff")]
     public GameObject gameOverScreen;
@@ -38,24 +40,29 @@ public class PlayerControl : MonoBehaviour
 
         winText.text = "";
 
-        timer = 0;
+        //timer = 0;
         won = false;
         resetPoint = GameObject.Find("Reset Point");
         originalColor = GetComponent<Renderer>().material.color;
+
+        gameController = FindObjectOfType<GameController>();
+        timer = FindObjectOfType<Timer>();
+        if (gameController.gameType == GameType.SpeedRun)
+            StartCoroutine(timer.StartCountdown());
     }
 
     
     void Update()
     {
-        if (won == false)
-        {
-            timer += Time.deltaTime;
-            timerText.text = "Time: " + timer.ToString("F2");
-        }
+       // if (won == false)
+        //{
+            //timer += Time.deltaTime;
+          //  timerText.text = "Time: " + timer.ToString("F2");
+       // }
     }
     void FixedUpdate()
     {
-        if (resetting)
+        if (gameController.gameType == GameType.SpeedRun && !timer.IsTiming())
             return;
 
         float moveHorizontal = Input.GetAxis("Horizontal");
@@ -84,7 +91,7 @@ public class PlayerControl : MonoBehaviour
         {
             WinGame();
             won = true;
-            winText.text = "You Win!\n" + "<color=red><size=50>" + "Your Time:" + timer.ToString("F3");
+            winText.text = "You Win!\n" + "<color=red><size=50>" + "Your Time:" + timer.ToString();
         }
     }
 
