@@ -14,7 +14,7 @@ public class SpeedRunToggleFix : MonoBehaviour
         StartCoroutine(FixSpeedRunToggle());
     }
 
-   IEnumerator FixSpeedRunToggle()
+    IEnumerator FixSpeedRunToggle()
     {
         yield return new WaitForEndOfFrame();
         if (gameController.gameType == GameType.SpeedRun)

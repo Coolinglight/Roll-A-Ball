@@ -24,6 +24,12 @@ public class PlayerControl : MonoBehaviour
     public TMP_Text winText;
     public TMP_Text timerText;
 
+    private void Awake()
+    {
+        gameController = FindObjectOfType<GameController>();
+        timer = FindObjectOfType<Timer>();
+    }
+
     void Start()
     {
         Time.timeScale = 1;
@@ -44,9 +50,9 @@ public class PlayerControl : MonoBehaviour
         won = false;
         resetPoint = GameObject.Find("Reset Point");
         originalColor = GetComponent<Renderer>().material.color;
-
         gameController = FindObjectOfType<GameController>();
-        timer = FindObjectOfType<Timer>();
+
+        
         if (gameController.gameType == GameType.SpeedRun)
             StartCoroutine(timer.StartCountdown());
     }
@@ -54,14 +60,20 @@ public class PlayerControl : MonoBehaviour
     
     void Update()
     {
-       // if (won == false)
+        //if (won == false)
         //{
-            //timer += Time.deltaTime;
-          //  timerText.text = "Time: " + timer.ToString("F2");
-       // }
+        //    float += Time.deltaTime;
+        //    timerText.text = "Time: " + timer.ToString();
+        //}
     }
     void FixedUpdate()
     {
+        if (resetting)
+            return;
+
+        if (gameController.controlType == ControlType.WorldTilt)
+            return;
+        
         if (gameController.gameType == GameType.SpeedRun && !timer.IsTiming())
             return;
 
@@ -76,6 +88,9 @@ public class PlayerControl : MonoBehaviour
     {
         if (other.CompareTag("Pick Up"))
         {
+            if (resetting)
+                return;
+
             CheckCount();
             //Destroy(other.gameObject);
             other.gameObject.SetActive(false);
@@ -91,7 +106,7 @@ public class PlayerControl : MonoBehaviour
         {
             WinGame();
             won = true;
-            winText.text = "You Win!\n" + "<color=red><size=50>" + "Your Time:" + timer.ToString();
+            //winText.text = "You Win!\n" + "<color=red><size=50>" + "Your Time:" + timer.timerText.text;
         }
     }
 
@@ -99,6 +114,9 @@ public class PlayerControl : MonoBehaviour
     {
         gameOverScreen.SetActive(true);
         winText.text = "You Win";
+
+        if (gameController.gameType == GameType.SpeedRun)
+            timer.StopTimer();
     }
 
     private void OnCollisionEnter(Collision collision)

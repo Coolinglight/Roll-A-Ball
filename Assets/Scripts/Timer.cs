@@ -22,12 +22,18 @@ public class Timer : MonoBehaviour
     public Text myTimeResult;
     public Text bestTimeResult;
 
-    void Start()
+    private void Awake()
     {
+        sceneController = FindObjectOfType<SceneController>();
+    }
+
+
+    void Start()
+    {   
         timesPanel.SetActive(false);
         countdownPanel.SetActive(false);
         timerText.text = "";
-        sceneController = FindObjectOfType<SceneController>();
+        
     }
 
     void Update()
@@ -64,7 +70,7 @@ public class Timer : MonoBehaviour
     }
 
     public void StopTimer()
-    {
+    {   
         timing = false;
         timesPanel.SetActive(true);
         myTimeResult.text = currentTime.ToString("F3");

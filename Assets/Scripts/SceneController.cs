@@ -15,6 +15,7 @@ public class SceneController : MonoBehaviour
 
     public void ToTitleScreen()
     {
+        GameController.instance.controlType = ControlType.Normal;
         SceneManager.LoadScene("Title");
     }
         
