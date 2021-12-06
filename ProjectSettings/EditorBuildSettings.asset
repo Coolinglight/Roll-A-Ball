@@ -13,7 +13,7 @@ EditorBuildSettings:
     guid: f55e3301bf98fe14b87facdc3e71bf71
   - enabled: 1
     path: Assets/Scenes/MyFirstLevel.unity
-    guid: 28bb2907636f3904ab5964257abcf237
+    guid: 78be6e2c71607a64f8ef9cb128d64bb6
   - enabled: 1
     path: Assets/Scenes/TiltWorld.unity
     guid: b57d0b0a64b2c514b8537d7e1eab4e9f

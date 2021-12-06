@@ -2,12 +2,15 @@ using UnityEngine;
 
 public enum GameType     { Normal, SpeedRun }
 public enum ControlType { Normal, WorldTilt }
+public enum WallType { Normal, Punishing}
 
 public class GameController : MonoBehaviour
 {
     public static GameController instance;
     public GameType gameType;
     public ControlType controlType;
+    public WallType wallType;
+    SceneController sceneController;
 
 
     private void Awake()
@@ -21,6 +24,8 @@ public class GameController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        sceneController = FindObjectOfType<SceneController>();
     }
 
     public void SetGameType(GameType _gameType)
@@ -43,4 +48,14 @@ public class GameController : MonoBehaviour
         else
             controlType = ControlType.Normal;
     }
+
+    public void ToggleWallType(bool _punishing)
+    {
+        if (_punishing)
+            wallType = WallType.Punishing;
+        else
+            wallType = WallType.Normal;
+    }
+
+    
 }

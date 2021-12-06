@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Timer : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Timer : MonoBehaviour
     public Text countdownText;
 
     [Header("UI In Game Panel")]
-    public Text timerText;
+    public TMP_Text timerText;
 
     [Header("UI Game Over Panel")]
     public GameObject timesPanel;
@@ -41,7 +42,7 @@ public class Timer : MonoBehaviour
         if (timing)
         {
             currentTime += Time.deltaTime;
-            timerText.text = currentTime.ToString("F3");
+            timerText.text = "Time " + "<color=red>" + currentTime.ToString("F3");
         }
     }
 
@@ -49,6 +50,8 @@ public class Timer : MonoBehaviour
     {
         bestTime = PlayerPrefs.GetFloat("BestTime" + sceneController.GetSceneName());
         if (bestTime == 0f) bestTime = 600f;
+
+        yield return new WaitForEndOfFrame();
 
         countdownPanel.SetActive(true);
         countdownText.text = "3";
