@@ -9,6 +9,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody rb;
     GameObject resetPoint;
     bool resetting = false;
+    bool grounded = true;
     Color originalColor;
 
     private int count;
@@ -73,15 +74,20 @@ public class PlayerControl : MonoBehaviour
 
         if (gameController.controlType == ControlType.WorldTilt)
             return;
-        
+
         if (gameController.gameType == GameType.SpeedRun && !timer.IsTiming())
             return;
 
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        if (grounded)
+        {
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            float moveVertical = Input.GetAxis("Vertical");
+            Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+            rb.AddForce(movement * speed);
+        }
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        rb.AddForce(movement * speed);
+        
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -132,6 +138,20 @@ public class PlayerControl : MonoBehaviour
                 StartCoroutine(ResetPlayer());
         }
     }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            grounded = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.CompareTag("Ground"))
+            grounded = false;
+    }
+
+
 
     public IEnumerator ResetPlayer()
     {
